@@ -1,12 +1,6 @@
-function solveSudoku(board: string[][]): void {
+export default function solveSudoku(board: string[][]): boolean {
     const solver = new SudokuSolver(board);
-    const solvedBoard = solver.solve();
-
-    for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-            board[i][j] = solvedBoard[i][j];
-        }
-    }
+    return solver.solve();
 }
 
 class SudokuSolver {
@@ -16,9 +10,8 @@ class SudokuSolver {
         this.board = board;
     }
 
-    public solve(): string[][] {
-        this.backtrack();
-        return this.board;
+    public solve(): boolean {
+        return this.backtrack();
     }
 
     private backtrack(): boolean {
