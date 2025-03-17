@@ -169,10 +169,13 @@ export default function SudokuSolver() {
                             maxLength={1}
                             disabled={isProcessing}
                             className={`
-                                w-12 h-12 text-center text-lg font-bold border border-gray-800 bg-white
+                                w-8 h-8 text-center text-lg font-bold border border-gray-800 bg-white
                                 ${i % 3 === 2 && i !== 8 ? "border-b-4 border-gray-800" : ""}
                                 ${j % 3 === 2 && j !== 8 ? "border-r-4 border-gray-800" : ""}
+                                sm:w-12 sm:h-12
                             `}
+                            aria-label={`Cell at row ${i + 1} column ${j + 1}`}
+                            tabIndex={0}
                         />
                     ))
                 )}
