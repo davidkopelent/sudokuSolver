@@ -1,5 +1,5 @@
-# sudokuSolver
+# Sudoku Solver
 
-Simple Sudoku solver app built with Next.js and Tailwind CSS.
+Simple sudoku solver built with Next.js, TypeScript, and Tailwind CSS.
 
 ![Sudoku Solver](./public/images/solverScreenshot.png)
