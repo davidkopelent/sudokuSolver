@@ -10,7 +10,10 @@ export default function SudokuSolver() {
     );
     const [image, setImage] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     // Handle image selection
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,10 +22,47 @@ export default function SudokuSolver() {
 
         const url = URL.createObjectURL(file);
         setImage(url);
-
-        // Wait for image to load before processing
         await new Promise((resolve) => setTimeout(resolve, 500));
         processImage(url);
+    };
+
+    const startCamera = async () => {
+        setIsCameraOpen(true);
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) videoRef.current.srcObject = stream;
+    };
+
+    const capturePhoto = () => {
+        if (!videoRef.current || !canvasRef.current) {
+            console.error("Video or canvas element not found.");
+            return;
+        }
+
+        const context = canvasRef.current.getContext("2d");
+        if (!context) {
+            console.error("Failed to get canvas context.");
+            return;
+        }
+
+        // Set canvas dimensions to match video dimensions
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+
+        // Draw the current frame from the video onto the canvas
+        context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+
+        // Convert the canvas content to a data URL
+        const imageUrl = canvasRef.current.toDataURL("image/png");
+
+        if (!imageUrl) {
+            console.error("Failed to capture image from video.");
+            return;
+        }
+
+        // Set the captured image URL
+        setImage(imageUrl);
+        setIsCameraOpen(false);
+        processImage(imageUrl);
     };
 
     // Process the image and extract numbers
@@ -132,20 +172,18 @@ export default function SudokuSolver() {
     return (
         <div className="flex flex-col items-center space-y-4 p-4 bg-white border-2 border-slate-100 rounded-xl relative">
             {/* Image upload section */}
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                className="hidden"
-            />
-            <button
-                onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 bg-white hover:bg-slate-50 text-black border-2 border-slate-100 rounded-lg"
-                disabled={isProcessing}
-            >
-                {isProcessing ? "Processing..." : "Upload sudoku from image"}
-            </button>
+            <div className="flex items-center space-y-2 gap-2">
+                <input type="file" accept="image/*" onChange={handleFileChange} ref={fileInputRef} className="hidden" />
+                <button onClick={() => fileInputRef.current?.click()} className="px-4 py-2 bg-white border-2 border-slate-100 rounded-lg hover:bg-slate-50" disabled={isProcessing}>Upload sudoku</button>
+                <button onClick={startCamera} className="px-4 py-2 bg-white border-2 border-slate-100 rounded-lg hover:bg-slate-50">Use camera</button>
+            </div>
+            {isCameraOpen && (
+                <div className="relative">
+                    <video ref={videoRef} autoPlay className="w-full max-w-xs rounded-lg" />
+                    <canvas ref={canvasRef} className="hidden" />
+                    <button onClick={capturePhoto} className="block mx-auto my-2 px-4 py-2 bg-green-500 text-white rounded-lg">Capture</button>
+                </div>
+            )}
 
             {isProcessing && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50">
