@@ -215,12 +215,13 @@ export default function SudokuSolver() {
                         className="w-full max-w-xs rounded-lg"
                     />
                     <canvas ref={canvasRef} className="hidden" />
-                    <button onClick={capturePhoto} className="block mx-auto my-2 px-4 py-2 bg-green-500 text-white rounded-lg">Capture</button>
                     
                     {/* Targeting square overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
                         <div className="border-4 border-red-500 w-64 h-64" />
                     </div>
+
+                    <button onClick={capturePhoto} className="block mx-auto my-2 px-4 py-2 bg-green-500 text-white rounded-lg">Capture</button>
                 </div>
             )}
 
