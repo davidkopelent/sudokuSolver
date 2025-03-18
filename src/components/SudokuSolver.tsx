@@ -28,8 +28,15 @@ export default function SudokuSolver() {
 
     const startCamera = async () => {
         setIsCameraOpen(true);
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        if (videoRef.current) videoRef.current.srcObject = stream;
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { exact: "environment" } } // Request the rear camera
+            });
+            if (videoRef.current) videoRef.current.srcObject = stream;
+        } catch (error) {
+            console.error("Error accessing the camera:", error);
+            alert("Could not access the rear camera. Please check your device settings.");
+        }
     };
 
     const capturePhoto = () => {
