@@ -218,7 +218,7 @@ export default function SudokuSolver() {
                     
                     {/* Targeting square overlay */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="border-4 border-red-500 w-64 h-64" /> {/* Adjust size as needed */}
+                        <div className="border-4 border-red-500 w-64 h-64" />
                     </div>
                 </div>
             )}
