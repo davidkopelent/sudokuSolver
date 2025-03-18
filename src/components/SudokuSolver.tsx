@@ -34,6 +34,7 @@ export default function SudokuSolver() {
             });
             if (videoRef.current) videoRef.current.srcObject = stream;
         } catch (error) {
+            setIsCameraOpen(false);
             console.error("Error accessing the camera:", error);
             alert("Could not access the rear camera. Please check your device settings.");
         }
