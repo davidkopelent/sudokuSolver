@@ -58,18 +58,39 @@ export default function SudokuSolver() {
         // Draw the current frame from the video onto the canvas
         context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
 
-        // Convert the canvas content to a data URL
-        const imageUrl = canvasRef.current.toDataURL("image/png");
+        // Define the size and position of the targeting square
+        const squareSize = 256; // Adjust this to match the targeting square size
+        const offsetX = (canvasRef.current.width - squareSize) / 2;
+        const offsetY = (canvasRef.current.height - squareSize) / 2;
 
-        if (!imageUrl) {
-            console.error("Failed to capture image from video.");
+        // Extract the image data from the targeting square area
+        const imageData = context.getImageData(offsetX, offsetY, squareSize, squareSize);
+
+        // Create a new canvas to hold the cropped image
+        const croppedCanvas = document.createElement("canvas");
+        croppedCanvas.width = squareSize;
+        croppedCanvas.height = squareSize;
+        const croppedContext = croppedCanvas.getContext("2d");
+        if (!croppedContext) {
+            console.error("Failed to get cropped canvas context.");
+            return;
+        }
+
+        // Draw the cropped image data onto the new canvas
+        croppedContext.putImageData(imageData, 0, 0);
+
+        // Convert the cropped canvas content to a data URL
+        const croppedImageUrl = croppedCanvas.toDataURL("image/png");
+
+        if (!croppedImageUrl) {
+            console.error("Failed to capture cropped image.");
             return;
         }
 
         // Set the captured image URL
-        setImage(imageUrl);
+        setImage(croppedImageUrl);
         setIsCameraOpen(false);
-        processImage(imageUrl);
+        processImage(croppedImageUrl);
     };
 
     // Process the image and extract numbers
@@ -186,9 +207,19 @@ export default function SudokuSolver() {
             </div>
             {isCameraOpen && (
                 <div className="relative">
-                    <video ref={videoRef} autoPlay className="w-full max-w-xs rounded-lg" />
+                    <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        className="w-full max-w-xs rounded-lg"
+                    />
                     <canvas ref={canvasRef} className="hidden" />
-                    <button onClick={capturePhoto} className="block mx-auto my-2 px-4 py-2 bg-green-500 text-white rounded-lg">Capture</button>
+                    <button onClick={capturePhoto} className="absolute bottom-2 px-4 py-2 bg-green-500 text-white rounded-lg">Capture</button>
+                    
+                    {/* Targeting square overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="border-4 border-red-500 w-64 h-64" /> {/* Adjust size as needed */}
+                    </div>
                 </div>
             )}
 
