@@ -231,7 +231,7 @@ export default function SudokuSolver() {
                 </div>
             )}
 
-            {image && <img src={image} alt="Uploaded Sudoku" className="w-72 border" />}
+            {image && <img src={image} alt="Uploaded Sudoku" className="w-fullborder" />}
 
             {/* Sudoku board */}
             <div className="grid grid-cols-9 p-2 rounded-lg">
