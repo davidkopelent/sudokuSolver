@@ -59,7 +59,7 @@ export default function SudokuSolver() {
         context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
 
         // Define the size and position of the targeting square
-        const squareSize = 256; // Adjust this to match the targeting square size
+        const squareSize = Math.min(canvasRef.current.width, canvasRef.current.height) * 0.8; // Adjust size relative to video
         const offsetX = (canvasRef.current.width - squareSize) / 2;
         const offsetY = (canvasRef.current.height - squareSize) / 2;
 
